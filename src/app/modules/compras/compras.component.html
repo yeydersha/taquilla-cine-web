@@ -1,0 +1,299 @@
+<section class="pagina">
+  <app-page-header
+    etiqueta="Ventas"
+    titulo="Compras"
+    descripcion="Registra la venta de boletas y consulta las compras realizadas."
+  />
+
+  @if (exito()) {
+    <div class="mensaje mensaje--exito" role="status">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <circle cx="12" cy="12" r="9" />
+        <path d="m8.5 12 2.5 2.5 4.5-5" />
+      </svg>
+      <p>{{ exito() }}</p>
+    </div>
+  }
+
+  @if (errorOperacion()) {
+    <div class="mensaje mensaje--error" role="alert">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 8v5M12 16h.01" />
+      </svg>
+      <p>{{ errorOperacion() }}</p>
+    </div>
+  }
+
+  <section class="panel" aria-labelledby="titulo-formulario">
+    <div class="panel-cabecera">
+      <div>
+        <h2 id="titulo-formulario">Nueva compra</h2>
+        <p class="nota">Complete los datos para registrar la venta de boletas.</p>
+      </div>
+    </div>
+
+    <form
+      class="formulario"
+      [formGroup]="formulario"
+      (ngSubmit)="registrar()"
+      novalidate
+      [attr.aria-busy]="guardando()"
+    >
+      <p class="nota">
+        Los campos marcados con <span class="obligatorio" aria-hidden="true">*</span> son
+        obligatorios.
+      </p>
+
+      <div class="formulario-campos">
+        <div class="campo campo--ancho" [class.campo--error]="tieneError('funcionId')">
+          <label for="funcionId">
+            Función <span class="obligatorio" aria-hidden="true">*</span>
+          </label>
+          <select
+            id="funcionId"
+            formControlName="funcionId"
+            required
+            [attr.aria-invalid]="tieneError('funcionId')"
+            [attr.aria-describedby]="tieneError('funcionId') ? 'funcion-error funcion-ayuda' : 'funcion-ayuda'"
+          >
+            <option value="" disabled>Seleccione una función</option>
+            @for (f of funciones(); track f.id) {
+              <option [ngValue]="f.id" [disabled]="f.cuposDisponibles === 0">
+                {{ f.tituloPelicula }} — {{ f.fecha }} {{ f.hora }} — Sala {{ f.sala }} —
+                {{ formatearPrecio(f.precio) }} — Cupos: {{ f.cuposDisponibles }}
+                @if (f.cuposDisponibles === 0) { (AGOTADA) }
+              </option>
+            }
+          </select>
+          <p id="funcion-ayuda" class="campo__ayuda">
+            @if (funciones().length === 0) {
+              No hay funciones programadas. Primero debe crear una en el módulo de Funciones.
+            } @else {
+              Seleccione la función para la compra.
+            }
+          </p>
+          @if (mensajeDe('funcionId'); as error) {
+            <p id="funcion-error" class="campo__error">{{ error }}</p>
+          }
+        </div>
+
+        @if (precioFuncion !== null || cuposDisponibles !== null) {
+          <div class="info-funcion">
+            <div class="info-fila">
+              <dt>Precio unitario</dt>
+              <dd>{{ formatearPrecio(precioFuncion!) }}</dd>
+            </div>
+            <div class="info-fila" [class.cupos-bajos]="cuposDisponibles !== null && cuposDisponibles! <= 5">
+              <dt>Cupos disponibles</dt>
+              <dd [class.destacado]="cuposDisponibles !== null && cuposDisponibles! <= 5">
+                {{ cuposDisponibles }} @if (cuposDisponibles! <= 5) { (POCOS) }
+              </dd>
+            </div>
+          </div>
+        }
+
+        <div class="campo" [class.campo--error]="tieneError('nombreCliente')">
+          <label for="nombreCliente">
+            Nombre del cliente <span class="obligatorio" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="nombreCliente"
+            type="text"
+            formControlName="nombreCliente"
+            maxlength="150"
+            autocomplete="name"
+            required
+            [attr.aria-invalid]="tieneError('nombreCliente')"
+            [attr.aria-describedby]="tieneError('nombreCliente') ? 'cliente-error cliente-ayuda' : 'cliente-ayuda'"
+          />
+          <p id="cliente-ayuda" class="campo__ayuda">Obligatorio, máximo 150 caracteres.</p>
+          @if (mensajeDe('nombreCliente'); as error) {
+            <p id="cliente-error" class="campo__error">{{ error }}</p>
+          }
+        </div>
+
+        <div class="campo" [class.campo--error]="tieneError('cantidadBoletos')">
+          <label for="cantidadBoletos">
+            Cantidad de boletos <span class="obligatorio" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="cantidadBoletos"
+            type="number"
+            formControlName="cantidadBoletos"
+            min="1"
+            step="1"
+            inputmode="numeric"
+            required
+            [attr.aria-invalid]="tieneError('cantidadBoletos')"
+            [attr.aria-describedby]="tieneError('cantidadBoletos') ? 'boletos-error boletos-ayuda' : 'boletos-ayuda'"
+          />
+          <p id="boletos-ayuda" class="campo__ayuda">Número entero mayor que cero.</p>
+          @if (mensajeDe('cantidadBoletos'); as error) {
+            <p id="boletos-error" class="campo__error">{{ error }}</p>
+          }
+        </div>
+      </div>
+
+      @if (totalEstimado !== null) {
+        <div class="total-estimado">
+          <dt>Total estimado</dt>
+          <dd class="destacado">{{ formatearPrecio(totalEstimado) }}</dd>
+          <p class="nota info-nota">El total oficial lo calcula el servidor al registrar la compra.</p>
+        </div>
+      }
+
+      @if (cuposInsuficientes) {
+        <div class="mensaje mensaje--error" role="alert" style="margin-block-start: 0.5rem;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8v5M12 16h.01" />
+          </svg>
+          <p>La cantidad solicitada supera los cupos disponibles ({{ cuposDisponibles }}).</p>
+        </div>
+      }
+
+      <div class="formulario-acciones">
+        <button type="submit" class="boton boton--primario" [disabled]="guardando()">
+          @if (guardando()) {
+            <span class="cargador cargador--pequeno" aria-hidden="true"></span>
+          }
+          {{ guardando() ? 'Registrando…' : 'Registrar compra' }}
+        </button>
+        <button
+          type="button"
+          class="boton boton--secundario"
+          (click)="limpiarFormulario()"
+          [disabled]="guardando()"
+        >
+          Limpiar
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel" aria-labelledby="titulo-compras">
+    <div class="panel-cabecera">
+      <div>
+        <h2 id="titulo-compras">Compras registradas</h2>
+        <p class="nota">Datos obtenidos de <code>GET /api/compras</code>.</p>
+      </div>
+
+      <div class="acciones">
+        @if (!cargandoCompras() && !error()) {
+          <span class="etiqueta">
+            {{ compras().length }}
+            {{ compras().length === 1 ? 'compra' : 'compras' }}
+            registrada{{ compras().length !== 1 ? 's' : '' }}
+          </span>
+        }
+      </div>
+    </div>
+
+    @if (cargandoCompras()) {
+      <div class="estado-carga" role="status">
+        <span class="cargador" aria-hidden="true"></span>
+        <p>Cargando compras…</p>
+      </div>
+    } @else if (error()) {
+      <div class="mensaje mensaje--error" role="alert">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 8v5M12 16h.01" />
+        </svg>
+        <div>
+          <strong>No se pudo cargar el listado</strong>
+          <p>{{ error() }}</p>
+        </div>
+      </div>
+    } @else if (compras().length === 0) {
+      <div class="estado-vacio">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4Z" />
+          <path d="M13 5v2M13 11v2M13 17v2" />
+        </svg>
+        <h3>No hay compras registradas</h3>
+        <p>Registre la primera compra usando el formulario superior.</p>
+      </div>
+    } @else {
+      <div
+        class="tabla-contenedor"
+        role="region"
+        aria-labelledby="caption-compras"
+        tabindex="0"
+      >
+        <table class="tabla-compras">
+          <caption id="caption-compras">
+            Compras registradas
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Función</th>
+              <th scope="col">Cliente</th>
+              <th scope="col">Boletos</th>
+              <th scope="col">Total</th>
+              <th scope="col">Fecha y hora</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (compra of compras(); track compra.id) {
+              <tr>
+                <td class="celda-id">{{ compra.id }}</td>
+                <td>
+                  @if (obtenerFuncion(compra.funcionId); as fn) {
+                    <span class="titulo-pelicula">{{ fn.tituloPelicula }}</span>
+                    <br />
+                    <small>{{ fn.fecha }} {{ fn.hora }} — Sala {{ fn.sala }}</small>
+                  } @else {
+                    <span class="texto-suave">Función ID {{ compra.funcionId }}</span>
+                  }
+                </td>
+                <td>{{ compra.nombreCliente }}</td>
+                <td class="columna-boletos">{{ compra.cantidadBoletos }}</td>
+                <td class="columna-precio">{{ formatearPrecio(compra.total) }}</td>
+                <td class="columna-fecha">{{ formatearFecha(compra.fechaCompra) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</section>

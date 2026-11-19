@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+.tabla-peliculas {
+  min-inline-size: 50rem; /* Ajustado para acomodar acciones */
+}
+
+.titulo-pelicula {
+  font-weight: 600;
+}
+
+.columna-duracion {
+  white-space: nowrap;
+}
+
+.confirmacion-fila {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid var(--color-error);
+  border-radius: var(--radio-pequeno);
+  background: var(--color-error-suave);
+}
+
+.confirmacion-texto {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-error-texto);
+}

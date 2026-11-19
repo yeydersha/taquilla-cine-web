@@ -1,0 +1,142 @@
+<section class="panel" aria-labelledby="titulo-formulario">
+  <div class="panel-cabecera">
+    <div>
+      <h2 id="titulo-formulario">{{ esEdicion ? 'Editar película' : 'Nueva película' }}</h2>
+      <p class="nota">
+        @if (esEdicion) {
+          Modifica los datos y guarda los cambios.
+        } @else {
+          Completa los datos para registrar una película en la cartelera.
+        }
+      </p>
+    </div>
+    <span class="etiqueta etiqueta--info">
+      {{ esEdicion ? 'ID ' + pelicula?.id : 'Nueva' }}
+    </span>
+  </div>
+
+  <form
+    class="formulario"
+    [formGroup]="formulario"
+    (ngSubmit)="enviar()"
+    novalidate
+    [attr.aria-busy]="guardando"
+  >
+    <p class="nota">
+      Los campos marcados con <span class="obligatorio" aria-hidden="true">*</span> son
+      obligatorios.
+    </p>
+
+    <div class="formulario-campos">
+      <div class="campo campo--ancho" [class.campo--error]="mensajeDe('titulo')">
+        <label for="titulo">
+          Título <span class="obligatorio" aria-hidden="true">*</span>
+        </label>
+        <input
+          id="titulo"
+          type="text"
+          formControlName="titulo"
+          maxlength="150"
+          autocomplete="off"
+          required
+          [attr.aria-invalid]="mensajeDe('titulo') ? 'true' : null"
+          [attr.aria-describedby]="
+            mensajeDe('titulo') ? 'titulo-ayuda titulo-error' : 'titulo-ayuda'
+          "
+        />
+        <p id="titulo-ayuda" class="campo__ayuda">Obligatorio, máximo 150 caracteres.</p>
+        @if (mensajeDe('titulo'); as error) {
+          <p id="titulo-error" class="campo__error">{{ error }}</p>
+        }
+      </div>
+
+      <div class="campo" [class.campo--error]="mensajeDe('genero')">
+        <label for="genero">
+          Género <span class="obligatorio" aria-hidden="true">*</span>
+        </label>
+        <input
+          id="genero"
+          type="text"
+          formControlName="genero"
+          maxlength="80"
+          autocomplete="off"
+          required
+          [attr.aria-invalid]="mensajeDe('genero') ? 'true' : null"
+          [attr.aria-describedby]="
+            mensajeDe('genero') ? 'genero-ayuda genero-error' : 'genero-ayuda'
+          "
+        />
+        <p id="genero-ayuda" class="campo__ayuda">Obligatorio, máximo 80 caracteres.</p>
+        @if (mensajeDe('genero'); as error) {
+          <p id="genero-error" class="campo__error">{{ error }}</p>
+        }
+      </div>
+
+      <div class="campo" [class.campo--error]="mensajeDe('duracionMin')">
+        <label for="duracionMin">
+          Duración en minutos <span class="obligatorio" aria-hidden="true">*</span>
+        </label>
+        <input
+          id="duracionMin"
+          type="number"
+          formControlName="duracionMin"
+          min="1"
+          step="1"
+          inputmode="numeric"
+          required
+          [attr.aria-invalid]="mensajeDe('duracionMin') ? 'true' : null"
+          [attr.aria-describedby]="
+            mensajeDe('duracionMin') ? 'duracion-ayuda duracion-error' : 'duracion-ayuda'
+          "
+        />
+        <p id="duracion-ayuda" class="campo__ayuda">
+          Número entero de minutos, mayor que cero.
+        </p>
+        @if (mensajeDe('duracionMin'); as error) {
+          <p id="duracion-error" class="campo__error">{{ error }}</p>
+        }
+      </div>
+
+      <div class="campo campo--ancho" [class.campo--error]="mensajeDe('clasificacion')">
+        <label for="clasificacion">
+          Clasificación <span class="obligatorio" aria-hidden="true">*</span>
+        </label>
+        <input
+          id="clasificacion"
+          type="text"
+          formControlName="clasificacion"
+          maxlength="20"
+          autocomplete="off"
+          required
+          [attr.aria-invalid]="mensajeDe('clasificacion') ? 'true' : null"
+          [attr.aria-describedby]="
+            mensajeDe('clasificacion') ? 'clasificacion-ayuda clasificacion-error' : 'clasificacion-ayuda'
+          "
+        />
+        <p id="clasificacion-ayuda" class="campo__ayuda">
+          Obligatorio, máximo 20 caracteres.
+        </p>
+        @if (mensajeDe('clasificacion'); as error) {
+          <p id="clasificacion-error" class="campo__error">{{ error }}</p>
+        }
+      </div>
+    </div>
+
+    <div class="formulario-acciones">
+      <button type="submit" class="boton boton--primario" [disabled]="guardando">
+        @if (guardando) {
+          <span class="cargador cargador--pequeno" aria-hidden="true"></span>
+        }
+        {{ guardando ? 'Guardando…' : 'Guardar' }}
+      </button>
+      <button
+        type="button"
+        class="boton boton--secundario"
+        (click)="cancelar.emit()"
+        [disabled]="guardando"
+      >
+        Cancelar
+      </button>
+    </div>
+  </form>
+</section>

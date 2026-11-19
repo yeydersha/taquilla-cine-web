@@ -1,0 +1,90 @@
+:host {
+  display: block;
+}
+
+.filtros-fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  align-items: end;
+}
+
+@media (max-width: 600px) {
+  .filtros-fila {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formulario-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--color-borde);
+}
+
+.indicadores {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-block-start: 1rem;
+}
+
+@media (max-width: 720px) {
+  .indicadores {
+    grid-template-columns: 1fr;
+  }
+}
+
+.indicador {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 1.25rem 1rem;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+  box-shadow: var(--sombra-sutil);
+}
+
+.indicador dt {
+  color: var(--color-texto-suave);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.indicador dd {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+.indicador .destacado.dinero {
+  color: var(--color-exito);
+  font-size: 1.5rem;
+}
+
+.tabla-ventas {
+  min-inline-size: 75rem;
+}
+
+.titulo-pelicula {
+  font-weight: 600;
+}
+
+.columna-boletos {
+  text-align: center;
+}
+
+.columna-precio,
+.columna-fecha {
+  white-space: nowrap;
+}
+
+.columna-precio {
+  text-align: right;
+}

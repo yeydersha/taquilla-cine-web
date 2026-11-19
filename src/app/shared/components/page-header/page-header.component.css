@@ -1,0 +1,25 @@
+.page-header {
+  display: grid;
+  gap: 0.35rem;
+  padding-block-end: 1rem;
+  border-block-end: 1px solid var(--color-borde);
+}
+
+.page-header-etiqueta {
+  margin: 0;
+  color: var(--color-primario);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.page-header-descripcion {
+  margin: 0;
+  max-inline-size: 70ch;
+  color: var(--color-texto-suave);
+}

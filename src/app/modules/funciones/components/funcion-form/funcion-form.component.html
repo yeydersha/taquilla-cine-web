@@ -1,0 +1,218 @@
+<section class="panel" aria-labelledby="titulo-formulario">
+  <div class="panel-cabecera">
+    <div>
+      <h2 id="titulo-formulario">{{ esEdicion ? 'Editar función' : 'Nueva función' }}</h2>
+      <p class="nota">
+        @if (esEdicion) {
+          Modifica los datos y guarda los cambios.
+        } @else {
+          Completa los datos para programar una nueva función.
+        }
+      </p>
+    </div>
+    <span class="etiqueta etiqueta--info">
+      {{ esEdicion ? 'ID ' + funcion?.id : 'Nueva' }}
+    </span>
+  </div>
+
+  <form
+    class="formulario"
+    [formGroup]="formulario"
+    (ngSubmit)="enviar()"
+    novalidate
+    [attr.aria-busy]="guardando"
+  >
+    <p class="nota">
+      Los campos marcados con <span class="obligatorio" aria-hidden="true">*</span> son
+      obligatorios.
+    </p>
+
+    @if (esEdicion && (cuposDisponibles !== null || cuposVendidos !== null)) {
+      <div class="info-edicion" role="region" aria-label="Información de cupos">
+        <div class="info-fila">
+          <dt>Cupos totales actuales</dt>
+          <dd>{{ funcion?.cuposTotales }}</dd>
+        </div>
+        <div class="info-fila">
+          <dt>Cupos disponibles</dt>
+          <dd class="destacado">{{ cuposDisponibles }}</dd>
+        </div>
+        <div class="info-fila">
+          <dt>Boletos vendidos</dt>
+          <dd>{{ cuposVendidos }}</dd>
+        </div>
+        <p class="nota info-nota">
+          Al modificar la capacidad, los cupos disponibles se recalcularán automáticamente:
+          <code>nuevos cupos totales - boletos vendidos</code>.
+        </p>
+      </div>
+    }
+
+    @if (!esEdicion) {
+      <p class="nota info-nota">
+        Al crear la función, los cupos disponibles se inicializarán igual a los cupos totales.
+      </p>
+    }
+
+    <div class="formulario-campos">
+      <div class="campo campo--ancho" [class.campo--error]="mensajeDe('peliculaId')">
+        <label for="peliculaId">
+          Película <span class="obligatorio" aria-hidden="true">*</span>
+        </label>
+        <select
+          id="peliculaId"
+          formControlName="peliculaId"
+          required
+          [attr.aria-invalid]="mensajeDe('peliculaId') ? 'true' : null"
+          [attr.aria-describedby]="
+            mensajeDe('peliculaId') ? 'pelicula-ayuda pelicula-error' : 'pelicula-ayuda'
+          "
+        >
+          <option value="" disabled>Seleccione una película</option>
+          @for (p of peliculas; track p.id) {
+            <option [value]="p.id">{{ p.titulo }} ({{ p.clasificacion }})</option>
+          }
+        </select>
+        <p id="pelicula-ayuda" class="campo__ayuda">
+          @if (peliculas.length === 0) {
+            No hay películas registradas. Primero debe crear una en el módulo de Películas.
+          } @else {
+            Seleccione la película para esta función.
+          }
+        </p>
+        @if (mensajeDe('peliculaId'); as error) {
+          <p id="pelicula-error" class="campo__error">{{ error }}</p>
+        }
+      </div>
+
+      <div class="campo" [class.campo--error]="mensajeDe('fecha')">
+        <label for="fecha">
+          Fecha <span class="obligatorio" aria-hidden="true">*</span>
+        </label>
+        <input
+          id="fecha"
+          type="date"
+          formControlName="fecha"
+          required
+          [attr.aria-invalid]="mensajeDe('fecha') ? 'true' : null"
+          [attr.aria-describedby]="
+            mensajeDe('fecha') ? 'fecha-ayuda fecha-error' : 'fecha-ayuda'
+          "
+        />
+        <p id="fecha-ayuda" class="campo__ayuda">Formato YYYY-MM-DD.</p>
+        @if (mensajeDe('fecha'); as error) {
+          <p id="fecha-error" class="campo__error">{{ error }}</p>
+        }
+      </div>
+
+      <div class="campo" [class.campo--error]="mensajeDe('hora')">
+        <label for="hora">
+          Hora <span class="obligatorio" aria-hidden="true">*</span>
+        </label>
+        <input
+          id="hora"
+          type="time"
+          formControlName="hora"
+          required
+          [attr.aria-invalid]="mensajeDe('hora') ? 'true' : null"
+          [attr.aria-describedby]="
+            mensajeDe('hora') ? 'hora-ayuda hora-error' : 'hora-ayuda'
+          "
+        />
+        <p id="hora-ayuda" class="campo__ayuda">Formato HH:mm (24 horas).</p>
+        @if (mensajeDe('hora'); as error) {
+          <p id="hora-error" class="campo__error">{{ error }}</p>
+        }
+      </div>
+
+      <div class="campo campo--ancho" [class.campo--error]="mensajeDe('sala')">
+        <label for="sala">
+          Sala <span class="obligatorio" aria-hidden="true">*</span>
+        </label>
+        <input
+          id="sala"
+          type="text"
+          formControlName="sala"
+          maxlength="50"
+          autocomplete="off"
+          required
+          [attr.aria-invalid]="mensajeDe('sala') ? 'true' : null"
+          [attr.aria-describedby]="
+            mensajeDe('sala') ? 'sala-ayuda sala-error' : 'sala-ayuda'
+          "
+        />
+        <p id="sala-ayuda" class="campo__ayuda">Obligatorio, máximo 50 caracteres.</p>
+        @if (mensajeDe('sala'); as error) {
+          <p id="sala-error" class="campo__error">{{ error }}</p>
+        }
+      </div>
+
+      <div class="campo" [class.campo--error]="mensajeDe('precio')">
+        <label for="precio">
+          Precio (COP) <span class="obligatorio" aria-hidden="true">*</span>
+        </label>
+        <input
+          id="precio"
+          type="number"
+          formControlName="precio"
+          step="0.01"
+          min="0.01"
+          inputmode="decimal"
+          required
+          [attr.aria-invalid]="mensajeDe('precio') ? 'true' : null"
+          [attr.aria-describedby]="
+            mensajeDe('precio') ? 'precio-ayuda precio-error' : 'precio-ayuda'
+          "
+        />
+        <p id="precio-ayuda" class="campo__ayuda">
+          Obligatorio, mayor que cero, máximo dos decimales (límite 9999999999.99).
+        </p>
+        @if (mensajeDe('precio'); as error) {
+          <p id="precio-error" class="campo__error">{{ error }}</p>
+        }
+      </div>
+
+      <div class="campo" [class.campo--error]="mensajeDe('cuposTotales')">
+        <label for="cuposTotales">
+          Cupos totales <span class="obligatorio" aria-hidden="true">*</span>
+        </label>
+        <input
+          id="cuposTotales"
+          type="number"
+          formControlName="cuposTotales"
+          min="1"
+          step="1"
+          inputmode="numeric"
+          required
+          [attr.aria-invalid]="mensajeDe('cuposTotales') ? 'true' : null"
+          [attr.aria-describedby]="
+            mensajeDe('cuposTotales') ? 'cupos-ayuda cupos-error' : 'cupos-ayuda'
+          "
+        />
+        <p id="cupos-ayuda" class="campo__ayuda">
+          Número entero mayor que cero.
+        </p>
+        @if (mensajeDe('cuposTotales'); as error) {
+          <p id="cupos-error" class="campo__error">{{ error }}</p>
+        }
+      </div>
+    </div>
+
+    <div class="formulario-acciones">
+      <button type="submit" class="boton boton--primario" [disabled]="guardando">
+        @if (guardando) {
+          <span class="cargador cargador--pequeno" aria-hidden="true"></span>
+        }
+        {{ guardando ? 'Guardando…' : 'Guardar' }}
+      </button>
+      <button
+        type="button"
+        class="boton boton--secundario"
+        (click)="cancelar.emit()"
+        [disabled]="guardando"
+      >
+        Cancelar
+      </button>
+    </div>
+  </form>
+</section>

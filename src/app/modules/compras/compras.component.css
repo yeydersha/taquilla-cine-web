@@ -1,0 +1,145 @@
+:host {
+  display: block;
+}
+
+.tabla-compras {
+  min-inline-size: 55rem;
+}
+
+.titulo-pelicula {
+  font-weight: 600;
+}
+
+.columna-boletos {
+  text-align: center;
+}
+
+.columna-precio,
+.columna-fecha {
+  white-space: nowrap;
+}
+
+.texto-suave {
+  color: var(--color-texto-suave);
+}
+
+.info-funcion {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.75rem;
+  margin-block-end: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-pequeno);
+  background: var(--color-fondo);
+}
+
+.info-funcion .info-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.3rem 0;
+}
+
+.info-funcion dt {
+  color: var(--color-texto-suave);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.info-funcion dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.cupos-bajos dd {
+  color: var(--color-error);
+}
+
+.total-estimado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid var(--color-primario);
+  border-radius: var(--radio-pequeno);
+  background: var(--color-primario-suave);
+  margin-block-end: 1rem;
+}
+
+.total-estimado dt {
+  color: var(--color-primario-oscuro);
+  font-weight: 600;
+}
+
+.total-estimado dd {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.total-estimado .destacado {
+  color: var(--color-primario);
+}
+
+.info-nota {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+}
+
+.formulario-campos {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 720px) {
+  .formulario-campos {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.campo--ancho {
+  grid-column: 1 / -1;
+}
+
+.formulario-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--color-borde);
+}
+
+.obligatorio {
+  color: var(--color-error);
+}
+
+.campo__ayuda {
+  margin: 0;
+  color: var(--color-texto-suave);
+  font-size: 0.8rem;
+}
+
+.campo__error {
+  margin: 0;
+  color: var(--color-error-texto);
+  font-size: 0.8rem;
+}
+
+.campo--error input,
+.campo--error select {
+  border-color: var(--color-error);
+}
+
+.cupos-bajos {
+  color: var(--color-error);
+}
+
+.destacado {
+  color: var(--color-primario);
+  font-weight: 600;
+}
+
+.columna-precio {
+  text-align: right;
+}

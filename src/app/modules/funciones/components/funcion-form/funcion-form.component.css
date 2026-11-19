@@ -1,0 +1,78 @@
+:host {
+  display: block;
+}
+
+.formulario-campos {
+  display: grid;
+  gap: 1rem;
+}
+
+.campo--ancho {
+  grid-column: 1 / -1;
+}
+
+.formulario-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--color-borde);
+}
+
+.obligatorio {
+  color: var(--color-error);
+}
+
+.info-edicion {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-pequeno);
+  background: var(--color-fondo);
+  margin-block-end: 1rem;
+}
+
+.info-edicion .info-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.3rem 0;
+  border-block-end: 1px solid var(--color-borde);
+}
+
+.info-edicion .info-fila:last-child {
+  border-block-end: none;
+}
+
+.info-edicion dt {
+  color: var(--color-texto-suave);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.info-edicion dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.info-edicion .destacado {
+  color: var(--color-primario);
+  font-size: 1.1rem;
+}
+
+.info-nota {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+}
+
+.info-nota code {
+  padding: 0.1rem 0.3rem;
+  font-size: 0.85em;
+}
+
+@media (min-width: 720px) {
+  .formulario-campos {
+    grid-template-columns: 1fr 1fr;
+  }
+}

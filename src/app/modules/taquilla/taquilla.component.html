@@ -1,0 +1,198 @@
+<section class="pagina">
+  <app-page-header
+    etiqueta="Reportes"
+    titulo="Taquilla"
+    descripcion="Consulta las ventas del día o de un rango de fechas."
+  />
+
+  @if (cargando() && !reporte()) {
+    <div class="estado-carga" role="status">
+      <span class="cargador" aria-hidden="true"></span>
+      <p>Cargando reporte…</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="mensaje mensaje--error" role="alert">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 8v5M12 16h.01" />
+      </svg>
+      <p>{{ error() }}</p>
+    </div>
+  }
+
+  <section class="panel" aria-labelledby="titulo-filtros">
+    <div class="panel-cabecera">
+      <h2 id="titulo-filtros">Filtros de fechas</h2>
+    </div>
+
+    <form
+      class="formulario formulario-filtros"
+      [formGroup]="formulario"
+      (ngSubmit)="consultar()"
+      novalidate
+      [attr.aria-busy]="consultando()"
+    >
+      <div class="filtros-fila">
+        <div class="campo" [class.campo--error]="formulario.get('fechaDesde')?.touched && formulario.get('fechaDesde')?.invalid">
+          <label for="fechaDesde">
+            Fecha inicial <span class="obligatorio" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="fechaDesde"
+            type="date"
+            formControlName="fechaDesde"
+            required
+            [attr.aria-invalid]="formulario.get('fechaDesde')?.invalid"
+            [attr.aria-describedby]="formulario.get('fechaDesde')?.touched && formulario.get('fechaDesde')?.invalid ? 'desde-error' : null"
+          />
+          @if (formulario.get('fechaDesde')?.touched && formulario.get('fechaDesde')?.invalid) {
+            <p id="desde-error" class="campo__error">La fecha inicial es obligatoria.</p>
+          }
+        </div>
+
+        <div class="campo" [class.campo--error]="formulario.get('fechaHasta')?.touched && formulario.get('fechaHasta')?.invalid">
+          <label for="fechaHasta">
+            Fecha final <span class="obligatorio" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="fechaHasta"
+            type="date"
+            formControlName="fechaHasta"
+            required
+            [attr.aria-invalid]="formulario.get('fechaHasta')?.invalid"
+            [attr.aria-describedby]="formulario.get('fechaHasta')?.touched && formulario.get('fechaHasta')?.invalid ? 'hasta-error' : null"
+          />
+          @if (formulario.get('fechaHasta')?.touched && formulario.get('fechaHasta')?.invalid) {
+            <p id="hasta-error" class="campo__error">La fecha final es obligatoria.</p>
+          }
+        </div>
+      </div>
+
+      @if (error()) {
+        <p class="campo__error" style="grid-column: 1 / -1; margin: 0;">{{ error() }}</p>
+      }
+
+      <div class="formulario-acciones" style="grid-column: 1 / -1;">
+        <button type="submit" class="boton boton--primario" [disabled]="consultando()">
+          @if (consultando()) {
+            <span class="cargador cargador--pequeno" aria-hidden="true"></span>
+          }
+          {{ consultando() ? 'Consultando…' : 'Consultar ventas' }}
+        </button>
+        <button
+          type="button"
+          class="boton boton--secundario"
+          (click)="establecerHoy()"
+          [disabled]="consultando()"
+        >
+          Hoy
+        </button>
+      </div>
+    </form>
+  </section>
+
+  @if (reporte(); as r) {
+    <section class="panel" aria-labelledby="titulo-resumen">
+      <div class="panel-cabecera">
+        <h2 id="titulo-resumen">Resumen de ventas</h2>
+        <p class="nota">Período: {{ formatearFechaSimple(r.fechaDesde) }} – {{ formatearFechaSimple(r.fechaHasta) }}</p>
+      </div>
+
+      <div class="indicadores">
+        <div class="indicador">
+          <dt>Compras</dt>
+          <dd class="destacado">{{ r.cantidadCompras }}</dd>
+        </div>
+        <div class="indicador">
+          <dt>Boletos vendidos</dt>
+          <dd class="destacado">{{ r.totalBoletos }}</dd>
+        </div>
+        <div class="indicador">
+          <dt>Total recaudado</dt>
+          <dd class="destacado dinero">{{ formatearPrecio(r.totalRecaudado) }}</dd>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="titulo-detalle">
+      <div class="panel-cabecera">
+        <h2 id="titulo-detalle">Detalle de ventas</h2>
+        <p class="nota">{{ r.cantidadCompras }} {{ r.cantidadCompras === 1 ? 'compra' : 'compras' }} en el período.</p>
+      </div>
+
+      @if (r.compras.length === 0) {
+        <div class="estado-vacio">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4Z" />
+            <path d="M13 5v2M13 11v2M13 17v2" />
+          </svg>
+          <h3>No hay ventas en el período seleccionado</h3>
+          <p>Intente ampliar el rango de fechas.</p>
+        </div>
+      } @else {
+        <div
+          class="tabla-contenedor"
+          role="region"
+          aria-labelledby="caption-detalle"
+          tabindex="0"
+        >
+          <table class="tabla-ventas">
+            <caption id="caption-detalle">
+              Detalle de ventas
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Película</th>
+                <th scope="col">Fecha y hora función</th>
+                <th scope="col">Sala</th>
+                <th scope="col">Boletos</th>
+                <th scope="col">Total</th>
+                <th scope="col">Fecha y hora compra</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (venta of r.compras; track venta.id) {
+                <tr>
+                  <td class="celda-id">{{ venta.id }}</td>
+                  <td>{{ venta.nombreCliente }}</td>
+                  <td>
+                    <span class="titulo-pelicula">{{ venta.tituloPelicula }}</span>
+                  </td>
+                  <td>
+                    {{ formatearFechaSimple(venta.fechaFuncion) }} {{ formatearHoraSimple(venta.horaFuncion) }}
+                  </td>
+                  <td>{{ venta.sala }}</td>
+                  <td class="columna-boletos">{{ venta.cantidadBoletos }}</td>
+                  <td class="columna-precio">{{ formatearPrecio(venta.total) }}</td>
+                  <td class="columna-fecha">{{ formatearFechaCompra(venta.fechaCompra) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  }
+</section>

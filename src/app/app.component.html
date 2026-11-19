@@ -1,0 +1,120 @@
+<a class="skip-link" href="#contenido">Saltar al contenido principal</a>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="marca" routerLink="/peliculas">
+      <span class="marca-icono" aria-hidden="true">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          focusable="false"
+        >
+          <rect x="3" y="4" width="18" height="16" rx="2" />
+          <path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4" />
+        </svg>
+      </span>
+      <span class="marca-texto">
+        <span class="marca-nombre">Taquilla de Cine</span>
+        <span class="marca-etiqueta">Administración</span>
+      </span>
+    </a>
+
+    <nav class="navegacion" aria-label="Navegación principal">
+      <p class="navegacion-titulo">Secciones</p>
+      <ul>
+        <li>
+          <a routerLink="/peliculas" routerLinkActive="activo" ariaCurrentWhenActive="page">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="M7 5v14M17 5v14M3 9h4M3 15h4M17 9h4M17 15h4" />
+            </svg>
+            <span>Películas</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/funciones" routerLinkActive="activo" ariaCurrentWhenActive="page">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <rect x="3" y="5" width="18" height="16" rx="2" />
+              <path d="M16 3v4M8 3v4M3 11h18" />
+            </svg>
+            <span>Funciones</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/compras" routerLinkActive="activo" ariaCurrentWhenActive="page">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4Z"
+              />
+              <path d="M13 5v2M13 11v2M13 17v2" />
+            </svg>
+            <span>Compras</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/taquilla" routerLinkActive="activo" ariaCurrentWhenActive="page">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M4 20V10M10 20V4M16 20v-7M22 20H2" />
+            </svg>
+            <span>Taquilla</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-pie">
+      <p>Proyecto académico</p>
+      <p>Programación Basada en Componentes</p>
+    </div>
+  </aside>
+
+  <div class="contenido">
+    <main id="contenido" tabindex="-1">
+      <router-outlet />
+    </main>
+
+    <footer class="pie">
+      <p>Taquilla de Cine · Programación Basada en Componentes · {{ anioActual }}</p>
+    </footer>
+  </div>
+</div>

@@ -1,0 +1,85 @@
+:host {
+  display: block;
+}
+
+.tabla-funciones {
+  min-inline-size: 65rem;
+}
+
+.titulo-pelicula {
+  font-weight: 600;
+}
+
+.columna-precio,
+.columna-cupos {
+  white-space: nowrap;
+}
+
+.columna-disponibles {
+  color: var(--color-primario);
+  font-weight: 600;
+}
+
+.destacado {
+  color: var(--color-primario);
+  font-weight: 600;
+}
+
+.confirmacion-fila {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid var(--color-error);
+  border-radius: var(--radio-pequeno);
+  background: var(--color-error-suave);
+}
+
+.confirmacion-texto {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-error-texto);
+}
+
+.info-edicion {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-pequeno);
+  background: var(--color-fondo);
+  margin-block-end: 1rem;
+}
+
+.info-edicion .info-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.3rem 0;
+  border-block-end: 1px solid var(--color-borde);
+}
+
+.info-edicion .info-fila:last-child {
+  border-block-end: none;
+}
+
+.info-edicion dt {
+  color: var(--color-texto-suave);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.info-edicion dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.info-nota {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+}
+
+.info-nota code {
+  padding: 0.1rem 0.3rem;
+  font-size: 0.85em;
+}
