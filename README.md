@@ -499,8 +499,8 @@ npx ng serve --port 4200 --host 0.0.0.0
 
 Archivo `application-local.properties` (no versionado, creado por el usuario):
 ```properties
-spring.datasource.url=jdbc:postgresql://ep-green-cherry-bdufmccf.c-8.us-east-2.aws.neon.tech:5432/taquilla_cine?sslmode=require
-spring.datasource.username=neondb_owner
+spring.datasource.url=jdbc:postgresql://TU_HOST_NEON:5432/taquilla_cine?sslmode=require
+spring.datasource.username=TU_USUARIO_NEON
 spring.datasource.password=***
 ```
 
